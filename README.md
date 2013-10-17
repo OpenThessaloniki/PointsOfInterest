@@ -1,9 +1,10 @@
-ot-records
-==========
+Points Of Interest
+==================
 
-OpenThessaloniki web app to record points of interest around the city
+A web application to record points of interest around the city.
 
-Code Reused from:
+Code (so far) Reused from:
 
 - http://the-jquerymobile-tutorial.org/jquery-mobile-tutorial-CH23.php
 - https://code.google.com/p/jquery-ui-map/
+
