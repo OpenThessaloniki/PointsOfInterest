@@ -8,6 +8,19 @@
 
   <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
   <script type="text/javascript" src="js/jquery.ui.map.js"></script>
+
+  <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.1/leaflet.css" />
+ <!--[if lte IE 8]>
+     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.1/leaflet.ie.css" />
+ <![endif]-->
+
+  <script src="http://cdn.leafletjs.com/leaflet-0.7.1/leaflet.js"></script>
+
+  <style type="text/css">
+    #map { 
+      height: 180px; 
+    }
+  </style>
 </head> 
 <body> 
 <div data-role="page" id="home">
@@ -18,9 +31,10 @@
     <span>Latitude:</span> <span id="lat"></span> <br>
     <span>Longitude:</span> <span id="lng"></span> <br>
   </div>
-  <div data-role="content" id="map_canvas" style="height: 300px;">
+  <!-- <div data-role="content" id="map_canvas" style="height: 300px;">
     
-  </div> 
+  </div> -->
+  <div id="map"></div>
 </div>
 
 <script type="text/javascript">
@@ -34,12 +48,18 @@
     $("#lng").text (lng);
   } );
 
-  $('#map_canvas').gmap().bind('init', function(ev, map) {
-      $('#map_canvas').gmap('addMarker', {'position': lat+','+lng, 'bounds': true}).click(function() {
-      $('#map_canvas').gmap('openInfoWindow', {'content': 'You are here!'}, this);
-    });
-  });
+  var map = L.map('map').setView([51.505, -0.09], 13);
+  var marker = L.marker([51.5, -0.09]).addTo(map);
+  var circle = L.circle([51.508, -0.11], 500, {
+    color: 'red',
+    fillColor: '#f03',
+    fillOpacity: 0.5
+  }).addTo(map);
+  var polygon = L.polygon([
+    [51.509, -0.08],
+    [51.503, -0.06],
+    [51.51, -0.047]
+  ]).addTo(map);
 </script>
-
 </body>
 </html>
