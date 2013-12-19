@@ -48,7 +48,10 @@
 		map.on('locationfound', onLocationFound);
 		map.on('locationerror', onLocationError);
 
-		map.locate({setView: true, maxZoom: 16});
+		map.locate({setView: true, maxZoom: 6});
+
+		var athensLatLong = [37.9667,  23.7167];
+		L.marker(athensLatLong).addTo(map);
 	</script>
 </body>
 </html>
