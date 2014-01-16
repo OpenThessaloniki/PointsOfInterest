@@ -1,0 +1,37 @@
+/* OSM-plugin css file                                        */
+/* www.Fotomobil.at/wp-osm-plugin                             */
+/* note: there is also some style information in the php-file */
+
+.entry .olMapViewport img, .entry-content img, .widget img {
+  max-width: none !important; 
+  max-height: none !important;
+  vertical-align: none !important;
+}
+
+
+.olTileImage {
+  max-width: none !important; 
+  max-height: none !important;
+  vertical-align: none !important;
+}
+   
+.olControlAttribution {
+  bottom: 0 !important;
+}
+
+div.olControlMousePosition {
+  bottom: 1em !important;
+}
+
+.olPopupContent
+{
+    /*padding-top:10px;
+    padding-bottom:10px;
+    padding-right:10px;
+    padding-left:10px;*/
+    padding: 0 0 0 0;
+    border: #fff solid;
+    border-width: 10px 10px;
+
+    white-space:nowrap;
+}
