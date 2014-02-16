@@ -39,12 +39,31 @@
         android:ems="10"
         android:inputType="textMultiLine" />
 
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/editBody"
+        android:text="Address1"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <EditText
+        android:id="@+id/editAddress1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/textView3"
+        android:ems="10"
+        android:inputType="textMultiLine" />
+
     <Button
         android:id="@+id/buttonPost"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/editBody"
+        android:layout_below="@+id/editAddress1"
         android:text="Post" />
 
     <Button
@@ -54,5 +73,13 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/buttonPost"
         android:text="Exit" />
+
+    <Button
+        android:id="@+id/buttonIndex"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/buttonExit"
+        android:text="Index" />
 
 </RelativeLayout>

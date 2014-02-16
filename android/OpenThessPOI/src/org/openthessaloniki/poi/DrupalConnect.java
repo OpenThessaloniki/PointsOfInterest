@@ -179,7 +179,7 @@ public class DrupalConnect {
 	 * @throws XmlRpcFault
 	 */
 	@SuppressWarnings("unchecked")
-	public int postArticle(String title, String body) throws IOException, XmlRpcException, XmlRpcFault {
+	public int postArticle(String title, String body, String address1) throws IOException, XmlRpcException, XmlRpcFault {
 		// check if user is authenticated
 		if (!isAuthenticated()) {
 			throw new IllegalStateException("Session is not open.");
@@ -196,6 +196,19 @@ public class DrupalConnect {
 		params.put("type", "article");
 		params.put("title", title);
 		params.put("body", body);
+
+		XmlRpcStruct address = new XmlRpcStruct();
+		address.put("country", "GR");
+		address.put("locality", "Θεσσαλονίκη");
+		address.put("postal_code", "12345");
+
+		XmlRpcArray addrs = new XmlRpcArray();
+		addrs.add(address);
+
+		XmlRpcStruct field_address = new XmlRpcStruct();
+		field_address.put("und", addrs);
+
+		params.put("field_address", field_address.toString());
 		
 		// remote call
 		XmlRpcStruct res = (XmlRpcStruct) xmlrpc.invoke("node.create", new Object[] { params });
