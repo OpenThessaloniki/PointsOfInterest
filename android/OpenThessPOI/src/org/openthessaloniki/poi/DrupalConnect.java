@@ -2,7 +2,10 @@ package org.openthessaloniki.poi;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.List;
 
+import redstone.xmlrpc.XmlRpcArray;
 import redstone.xmlrpc.XmlRpcClient;
 import redstone.xmlrpc.XmlRpcException;
 import redstone.xmlrpc.XmlRpcFault;
@@ -102,6 +105,70 @@ public class DrupalConnect {
 		return true;
 	}
 
+	/**
+	 * Get articles.
+	 * @return article node identifiers
+	 * @throws IOException
+	 * @throws XmlRpcException
+	 * @throws XmlRpcFault
+	 */
+	public List<Integer> getArticles() throws IOException, XmlRpcException, XmlRpcFault {
+		// check if user is authenticated
+		if (!isAuthenticated()) {
+			throw new IllegalStateException("Session is not open.");
+		}
+		
+		// create xml-rpc client
+		XmlRpcClient xmlrpc = new XmlRpcClient(XMLRPC, false);
+		xmlrpc.setRequestProperty("X-CSRF-Token", csrf_token);
+		// set session cookie
+		xmlrpc.setRequestProperty("Cookie", getSessionCookieString());
+		
+		// remote call
+		XmlRpcArray res = (XmlRpcArray) xmlrpc.invoke("node.index", new Object[] { });
+		final int count = res.size();
+		List<Integer> nids = new ArrayList<Integer>();
+		for (int i = 0; i < count; i++) {
+			XmlRpcStruct node = (XmlRpcStruct) res.get(i);
+			nids.add(Integer.parseInt(node.get("nid").toString()));
+		}
+
+		// get page nid and return it 
+		return nids;
+	}
+	
+	/**
+	 * Get an article.
+	 * @param nid node article identifier
+	 * @return article
+	 * @throws IOException
+	 * @throws XmlRpcException
+	 * @throws XmlRpcFault
+	 */
+	@SuppressWarnings("unchecked")
+	public XmlRpcStruct getArticle(int nid) throws IOException, XmlRpcException, XmlRpcFault {
+		// check if user is authenticated
+		if (!isAuthenticated()) {
+			throw new IllegalStateException("Session is not open.");
+		}
+		
+		// create xml-rpc client
+		XmlRpcClient xmlrpc = new XmlRpcClient(XMLRPC, false);
+		xmlrpc.setRequestProperty("X-CSRF-Token", csrf_token);
+		// set session cookie
+		xmlrpc.setRequestProperty("Cookie", getSessionCookieString());
+		
+		// set page values
+		XmlRpcStruct params = new XmlRpcStruct();
+		params.put("nid", nid);
+		
+		// remote call
+		XmlRpcStruct res = (XmlRpcStruct) xmlrpc.invoke("node.retrieve", new Object[] { params });
+		
+		// get page nid and return it 
+		return res;
+	}
+	
 	/**
 	 * Posts article.
 	 * @param title article title
