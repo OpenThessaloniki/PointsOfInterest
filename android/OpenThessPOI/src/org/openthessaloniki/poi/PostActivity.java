@@ -70,7 +70,7 @@ public class PostActivity extends Activity {
 			@Override
 			protected Boolean doInBackground(Void... params) {
 				try {
-					nid = DrupalConnect.getInstance().postPage(title, body);
+					nid = DrupalConnect.getInstance().postArticle(title, body);
 					return true;
 				}
 				catch (Exception e) {

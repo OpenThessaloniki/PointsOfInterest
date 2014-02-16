@@ -103,6 +103,41 @@ public class DrupalConnect {
 	}
 
 	/**
+	 * Posts article.
+	 * @param title article title
+	 * @param body article body
+	 * @return article node identifier
+	 * @throws IOException
+	 * @throws XmlRpcException
+	 * @throws XmlRpcFault
+	 */
+	@SuppressWarnings("unchecked")
+	public int postArticle(String title, String body) throws IOException, XmlRpcException, XmlRpcFault {
+		// check if user is authenticated
+		if (!isAuthenticated()) {
+			throw new IllegalStateException("Session is not open.");
+		}
+		
+		// create xml-rpc client
+		XmlRpcClient xmlrpc = new XmlRpcClient(XMLRPC, false);
+		xmlrpc.setRequestProperty("X-CSRF-Token", csrf_token);
+		// set session cookie
+		xmlrpc.setRequestProperty("Cookie", getSessionCookieString());
+		
+		// set page values
+		XmlRpcStruct params = new XmlRpcStruct();
+		params.put("type", "article");
+		params.put("title", title);
+		params.put("body", body);
+		
+		// remote call
+		XmlRpcStruct res = (XmlRpcStruct) xmlrpc.invoke("node.create", new Object[] { params });
+		
+		// get page nid and return it 
+		return Integer.parseInt(res.get("nid").toString());
+	}
+	
+	/**
 	 * Posts page.
 	 * @param title page title
 	 * @param body page body
