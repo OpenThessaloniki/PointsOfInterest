@@ -366,12 +366,13 @@ public class XmlRpcClient extends XmlRpcParser implements XmlRpcInvocationHandle
             else
             {
                 StringBuffer buffer = ( ( StringWriter ) writer ).getBuffer();
-
+                byte[] bytes = buffer.toString().getBytes( XmlRpcMessages.getString( "XmlRpcClient.Encoding" ) );
+                
                 openConnection();
-                connection.setRequestProperty( "Content-Length", String.valueOf( buffer.length() ) );
+                connection.setRequestProperty( "Content-Length", String.valueOf( bytes.length ) );
 
                 OutputStream output = new BufferedOutputStream( connection.getOutputStream() );
-                output.write( buffer.toString().getBytes( XmlRpcMessages.getString( "XmlRpcClient.Encoding" ) ) );
+                output.write( bytes );
                 output.flush();
                 output.close();
             }
