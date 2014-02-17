@@ -198,6 +198,7 @@ public class DrupalConnect {
 		params.put("body", body);
 
 		XmlRpcStruct address = new XmlRpcStruct();
+		address.put("thoroughfare", address1);
 		address.put("country", "GR");
 		address.put("locality", "Θεσσαλονίκη");
 		address.put("postal_code", "12345");
