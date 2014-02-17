@@ -208,8 +208,8 @@ public class DrupalConnect {
 		XmlRpcStruct field_address = new XmlRpcStruct();
 		field_address.put("und", addrs);
 
-		params.put("field_address", field_address.toString());
-		
+		params.put("field_address", field_address);
+
 		// remote call
 		XmlRpcStruct res = (XmlRpcStruct) xmlrpc.invoke("node.create", new Object[] { params });
 		
