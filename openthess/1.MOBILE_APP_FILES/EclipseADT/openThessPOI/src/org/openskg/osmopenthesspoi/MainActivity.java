@@ -5,16 +5,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 
-//import org.osmdroid.DefaultResourceProxyImpl;
-import org.osmdroid.ResourceProxy;
-import org.osmdroid.api.IMyLocationOverlay;
+import org.openskg.osmopenthesspoi.NetUtils.NetResultHandler;
 import org.osmdroid.bonuspack.kml.KmlDocument;
 import org.osmdroid.bonuspack.kml.KmlObject;
-import org.osmdroid.bonuspack.location.NominatimPOIProvider;
-import org.osmdroid.bonuspack.location.POI;
 import org.osmdroid.bonuspack.overlays.ExtendedOverlayItem;
 import org.osmdroid.bonuspack.overlays.FolderOverlay;
 import org.osmdroid.bonuspack.overlays.ItemizedOverlayWithBubble;
@@ -22,34 +19,21 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapController;
 import org.osmdroid.views.MapView;
-import org.osmdroid.views.overlay.ItemizedIconOverlay;
-import org.osmdroid.views.overlay.ItemizedIconOverlay.OnItemGestureListener;
-import org.osmdroid.views.overlay.MyLocationOverlay;
 import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.ScaleBarOverlay;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.res.AssetManager;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.Environment;
-import android.app.Activity;
-//import android.app.AlertDialog;
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.util.Log;
-/*
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Point;
-*/
 import android.view.Menu;
-//import android.view.MotionEvent;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 public class MainActivity extends Activity {
@@ -235,7 +219,33 @@ public class MainActivity extends Activity {
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
-	
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch(item.getItemId()) {
+		case R.id.action_settings:
+			break;
+		case R.id.action_download_kml:
+			URL url = null;
+			try {
+				url = new URL("http://aws.hypest.com/restaurants.kml");
+			} catch (MalformedURLException e) {
+				Toast.makeText(this, "Oops!", Toast.LENGTH_SHORT).show();
+				e.printStackTrace();
+				break;
+			}
+
+			NetUtils.getAsync(url, new NetResultHandler() {
+				@Override
+				public void onResult(String result) {
+					Toast.makeText(MainActivity.this, "Downloaded!", Toast.LENGTH_SHORT).show();
+				}
+			});
+			break;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+
 	@Override
 	protected void onResume() {
 		super.onResume();

@@ -18,5 +18,6 @@
 			<attribute name="javadoc_location" value="jar:file:/C:/android/GPS_OSM_Stuff/javadoc_v4.2.2.zip!/javadoc_v4.2.2"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="libs/okhttp-1.3.0-jar-with-dependencies.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

@@ -2,6 +2,8 @@
 <resources>
 
     <string name="app_name">openThessPOI</string>
+
     <string name="action_settings">Settings</string>
+    <string name="action_download_kml">Download KML</string>
 
 </resources>
