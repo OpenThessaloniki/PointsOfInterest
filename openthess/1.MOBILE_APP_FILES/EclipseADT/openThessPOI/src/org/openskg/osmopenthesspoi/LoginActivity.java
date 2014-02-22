@@ -6,7 +6,6 @@ import org.openskg.osmopenthesspoi.utils.PrefsHelper;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -15,6 +14,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class LoginActivity extends Activity {
 	// UI controls
@@ -116,16 +116,13 @@ public class LoginActivity extends Activity {
 				
 				if (result.equals("OK")) {
 					saveAuthData();
-					
-					GUIHelper.showMessage(LoginActivity.this, "Success!", "Login OK");
 
-					// switch to PostActivity
-					Intent intent = new Intent(LoginActivity.this, PostActivity.class);
-					startActivity(intent);
+					Toast.makeText(LoginActivity.this, "Login OK", Toast.LENGTH_SHORT).show();
+
 					finish();
 				}
 				else {
-					GUIHelper.showError(LoginActivity.this, "Login is failed. " + result);
+					GUIHelper.showError(LoginActivity.this, "Login failed. " + result);
 				}
 			}
 		}).execute();

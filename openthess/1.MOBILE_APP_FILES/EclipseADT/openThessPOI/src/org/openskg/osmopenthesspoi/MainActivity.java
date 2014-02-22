@@ -26,6 +26,7 @@ import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
@@ -242,6 +243,9 @@ public class MainActivity extends Activity {
 					Toast.makeText(MainActivity.this, "Downloaded!", Toast.LENGTH_SHORT).show();
 				}
 			});
+			break;
+		case R.id.action_login:
+			startActivity(new Intent(MainActivity.this, LoginActivity.class));
 			break;
 		}
 		return super.onOptionsItemSelected(item);

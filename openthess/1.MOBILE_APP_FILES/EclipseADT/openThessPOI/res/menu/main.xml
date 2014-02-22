@@ -12,4 +12,10 @@
         android:showAsAction="ifRoom"
         android:title="@string/action_download_kml"/>
 
+    <item
+        android:id="@+id/action_login"
+        android:orderInCategory="200"
+        android:showAsAction="ifRoom"
+        android:title="@string/action_login"/>
+
 </menu>

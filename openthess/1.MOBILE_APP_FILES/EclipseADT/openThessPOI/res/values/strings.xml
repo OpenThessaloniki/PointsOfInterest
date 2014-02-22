@@ -5,5 +5,6 @@
 
     <string name="action_settings">Settings</string>
     <string name="action_download_kml">Download KML</string>
+    <string name="action_login">Login</string>
 
 </resources>
