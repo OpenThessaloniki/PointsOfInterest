@@ -159,20 +159,20 @@ public class MainActivity extends Activity {
 		//=====================================*/
 
 		
-		/*===============
-		 * Using kml documents :)
-		 */
-		KmlDocument kmlDocument = new KmlDocument();
-		//KmlObject result = kmlDocument.parseUrl("http://www.yournavigation.org/api/1.0/gosmore.php?format=kml&flat=52.215676&flon=5.963946&tlat=52.2573&tlon=6.1799");
-		
-		// Read KML file from local storage yupi! :)
-		File localfile = kmlDocument.getDefaultPathForAndroid("restaurants.kml");
-		KmlObject result = kmlDocument.parseFile(localfile);
-		
-		Drawable defMarker = getResources().getDrawable(R.drawable.marker_kml_point);
-		FolderOverlay restaurantkmlOverlay = (FolderOverlay)kmlDocument.kmlRoot.buildOverlays(this, myOpenMapView, defMarker, kmlDocument, false);
-		myOpenMapView.getOverlays().add(restaurantkmlOverlay);
-		myOpenMapView.invalidate();
+//		/*===============
+//		 * Using kml documents :)
+//		 */
+//		KmlDocument kmlDocument = new KmlDocument();
+//		//KmlObject result = kmlDocument.parseUrl("http://www.yournavigation.org/api/1.0/gosmore.php?format=kml&flat=52.215676&flon=5.963946&tlat=52.2573&tlon=6.1799");
+//		
+//		// Read KML file from local storage yupi! :)
+//		File localfile = kmlDocument.getDefaultPathForAndroid("restaurants.kml");
+//		KmlObject result = kmlDocument.parseFile(localfile);
+//		
+//		Drawable defMarker = getResources().getDrawable(R.drawable.marker_kml_point);
+//		FolderOverlay restaurantkmlOverlay = (FolderOverlay)kmlDocument.kmlRoot.buildOverlays(this, myOpenMapView, defMarker, kmlDocument, false);
+//		myOpenMapView.getOverlays().add(restaurantkmlOverlay);
+//		myOpenMapView.invalidate();
 		
 		/*=================*/
 		
@@ -241,6 +241,10 @@ public class MainActivity extends Activity {
 				@Override
 				public void onResult(String result) {
 					Toast.makeText(MainActivity.this, "Downloaded!", Toast.LENGTH_SHORT).show();
+
+					saveKML(result, "restaurants.kml");
+
+					loadKMLOverlay("restaurants.kml");
 				}
 			});
 			break;
@@ -249,6 +253,40 @@ public class MainActivity extends Activity {
 			break;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	private void saveKML(final String data, final String filename) {
+		FileOutputStream outputStream = null;
+		try {
+			outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
+			outputStream.write(data.getBytes());
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (outputStream != null) {
+				try {
+					outputStream.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				outputStream = null;
+			}
+		}
+	}
+
+	private void loadKMLOverlay(final String filename) {
+        KmlDocument kmlDocument = new KmlDocument();
+        File localfile = new File(MainActivity.this.getFilesDir(), filename);
+        kmlDocument.parseFile(localfile);
+
+        Drawable defMarker = getResources().getDrawable(R.drawable.marker_kml_point);
+        FolderOverlay restaurantkmlOverlay = (FolderOverlay) kmlDocument.kmlRoot.buildOverlays(
+                MainActivity.this, myOpenMapView, defMarker, kmlDocument, false);
+
+        myOpenMapView.getOverlays().clear();
+        myOpenMapView.getOverlays().add(restaurantkmlOverlay);
+        myOpenMapView.invalidate();
+
 	}
 
 	@Override
