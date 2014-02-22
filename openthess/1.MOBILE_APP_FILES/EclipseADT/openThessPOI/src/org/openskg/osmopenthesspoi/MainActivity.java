@@ -9,7 +9,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
-import org.openskg.osmopenthesspoi.NetUtils.NetResultHandler;
+import org.openskg.osmopenthesspoi.net.NetUtils;
+import org.openskg.osmopenthesspoi.net.NetUtils.NetResultHandler;
 import org.osmdroid.bonuspack.kml.KmlDocument;
 import org.osmdroid.bonuspack.kml.KmlObject;
 import org.osmdroid.bonuspack.overlays.ExtendedOverlayItem;

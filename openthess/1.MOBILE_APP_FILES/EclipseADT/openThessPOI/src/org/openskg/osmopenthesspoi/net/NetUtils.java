@@ -1,4 +1,4 @@
-package org.openskg.osmopenthesspoi;
+package org.openskg.osmopenthesspoi.net;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
