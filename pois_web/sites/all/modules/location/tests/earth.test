@@ -14,7 +14,7 @@ class LocationEarthTest extends LocationTestCase {
     return array(
       'name' => t('Location earth.inc tests'),
       'description' => t('Test earth.inc calculations.'),
-      'group' => t('Location'),
+      'group' => t('Location', array(), array('context' => 'geolocation')),
     );
   }
 

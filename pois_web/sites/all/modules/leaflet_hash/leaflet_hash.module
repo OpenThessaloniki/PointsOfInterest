@@ -1,0 +1,60 @@
+<?php
+
+/**
+ * Implements hook_library().
+ */
+function leaflet_hash_library() {
+  if (!($path = leaflet_hash_get_library_path())) {
+    return NULL;
+  }
+
+  $libraries['leaflet-hash'] = array(
+    'title' => 'Leaflet Hash',
+    'version' => 0, // we don't have a version
+    'js' => array(
+      array(
+        'type' => 'file',
+        'data' => "$path/leaflet-hash.js",
+        'group' => JS_LIBRARY,
+        'preprocess' => FALSE,
+      ),
+    ),
+  );
+
+  return $libraries;
+}
+
+function leaflet_hash_preprocess_leaflet_map(&$vars) {
+  drupal_add_library('leaflet_hash', 'leaflet-hash');
+  drupal_add_js(drupal_get_path('module', 'leaflet_hash') . '/leaflet_hash.drupal.js');
+}
+
+/**
+ * Implements hook_requirements().
+ */
+function leaflet_hash_requirements($phase) {
+
+  if ($phase != 'runtime') {
+    return array();
+  }
+  $requirements['leaflet_hash']['title'] = t('Leaflet Hash library');
+  if ($path = leaflet_hash_get_library_path()) {
+    $file = "$path/leaflet-hash.js";
+  }
+  if ($path && file_exists($file)) {
+    $requirements['leaflet_hash']['value'] = t('Installed');
+    $requirements['leaflet_hash']['severity'] = REQUIREMENT_OK;
+  }
+  else {
+    $requirements['leaflet_hash']['value'] =
+      $path ? t('File not found: %file', array('%file' => $file)) : t('/leaflet-hash library directory missing');
+    $requirements['leaflet_hash']['severity'] = REQUIREMENT_ERROR;
+  }
+
+  return $requirements;
+}
+
+function leaflet_hash_get_library_path() {
+  $path = libraries_get_path('leaflet-hash');
+  return $path;
+}

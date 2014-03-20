@@ -28,7 +28,7 @@ class CowInstanceTest extends LocationTestCase {
     return array(
       'name' => t('Location Copy on Write checks'),
       'description' => t('Test corner cases of the copy on write mechanism.'),
-      'group' => t('Location'),
+      'group' => t('Location', array(), array('context' => 'geolocation')),
     );
   }
 

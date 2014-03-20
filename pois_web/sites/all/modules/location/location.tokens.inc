@@ -10,7 +10,7 @@
  */
 function location_token_info() {
   $type = array(
-    'name' => t('Location'),
+    'name' => t('Location', array(), array('context' => 'geolocation')),
     'description' => t('Tokens related to location.'),
     'needs-data' => 'location',
   );
@@ -75,14 +75,14 @@ function location_token_info() {
 
   $node = array(
     'location' => array(
-      'name' => t("Location"),
+      'name' => t('Location', array(), array('context' => 'geolocation')),
       'description' => t("The location for this node."),
       'type' => 'location',
     )
   );
   $user = array(
     'location' => array(
-      'name' => t("Location"),
+      'name' => t('Location', array(), array('context' => 'geolocation')),
       'description' => t("The location for this user."),
       'type' => 'location',
     )

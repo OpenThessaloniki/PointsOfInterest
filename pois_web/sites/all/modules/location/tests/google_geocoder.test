@@ -14,7 +14,7 @@ class LocationGoogleGeocoderTest extends LocationTestCase {
     return array(
       'name' => t('Location Google Geocoder tests(broken!!!)'),
       'description' => t('Test address mangling for the google geocoder.'),
-      'group' => t('Location'),
+      'group' => t('Location', array(), array('context' => 'geolocation')),
     );
   }
 

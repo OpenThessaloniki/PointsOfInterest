@@ -21,6 +21,7 @@ files[] = tests/location_cck2.test
 files[] = handlers/location_handler_argument_location_country.inc
 files[] = handlers/location_handler_argument_location_province.inc
 files[] = handlers/location_handler_argument_location_proximity.inc
+files[] = handlers/location_handler_field_location_additional.inc
 files[] = handlers/location_handler_field_location_address.inc
 files[] = handlers/location_handler_field_location_country.inc
 files[] = handlers/location_handler_field_location_distance.inc
@@ -28,6 +29,7 @@ files[] = handlers/location_handler_field_location_province.inc
 files[] = handlers/location_handler_field_location_street.inc
 files[] = handlers/location_handler_filter_location_country.inc
 files[] = handlers/location_handler_filter_location_province.inc
+files[] = handlers/location_handler_sort_location_country.inc
 files[] = handlers/location_handler_sort_location_distance.inc
 files[] = handlers/location_views_handler_field_coordinates.inc
 files[] = handlers/location_views_handler_field_latitude.inc
@@ -36,9 +38,10 @@ files[] = handlers/location_views_handler_filter_proximity.inc
 files[] = plugins/contexts/location.inc
 files[] = plugins/relationships/location_from_node.inc
 
-; Information added by drupal.org packaging script on 2013-10-30
-version = "7.x-3.1"
+
+; Information added by Drupal.org packaging script on 2014-03-10
+version = "7.x-3.2"
 core = "7.x"
 project = "location"
-datestamp = "1383154846"
+datestamp = "1394459305"
 

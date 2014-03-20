@@ -254,7 +254,7 @@ function location_node_content_extra_fields($type_name) {
   if (isset($settings['multiple']) && $settings['multiple']['max'] > 0) {
     $weight = isset($settings['form']['weight']) ? $settings['form']['weight'] : 0;
     $extra['locations'] = array(
-      'label' => t('Locations'),
+      'label' => t('Locations', array(), array('context' => 'geolocation')),
       'description' => t('Node Locations module form.'),
       'weight' => $weight,
     );

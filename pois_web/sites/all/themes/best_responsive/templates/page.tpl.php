@@ -100,7 +100,7 @@
         </a></div><?php endif; ?>
         <h1 id="site-name">
           <a href="<?php print $front_page; ?>" title="<?php print t('Home'); ?>"><span><?php print $site_name; ?></span></a>
-        </h1>
+        </h1><h4 style="position: relative; top: 75px; left: -160px; color: #fff;">by <a style="color: #fff;" href="http://openthessaloniki.org">Open Thessaloniki</a></h4>
       </div>
       <nav id="navigation" role="navigation">
         <div id="main-menu">
@@ -205,7 +205,7 @@
   </footer>
   <?php endif; ?>
 
-  <div id="copyright">
+  <!--<div id="copyright">
     <?php print t('Copyright'); ?> &copy; <?php echo date("Y"); ?>, <a href="<?php print $front_page; ?>"><?php print $site_name; ?></a>. <?php print t('Theme by'); ?>  <a href="http://www.devsaran.com" target="_blank">Devsaran</a>
-  </div>
+  </div>-->
 </div>

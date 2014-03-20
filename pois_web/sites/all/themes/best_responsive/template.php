@@ -107,6 +107,19 @@ function best_responsive_page_alter($page) {
   drupal_add_html_head($viewport, 'viewport');
 }
 
+/**
+ * Added by BillTzim
+ */
+ 
+function best_responsive_form_alter(&$form, &$form_state, $form_id) {
+  switch($form_id) {
+        case 'user_profile_form': 
+          $form['field_posting_points']['#disabled'] = true;
+          break;
+        
+  }
+}
+
 
 /**
  * Add javascript files for front-page jquery slideshow.

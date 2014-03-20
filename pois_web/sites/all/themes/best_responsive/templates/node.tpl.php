@@ -88,8 +88,8 @@
   
       <?php if ($display_submitted): ?>
         <ul class="meta clearfix">
-          <li><strong>Posted on:</strong> <?php print $date; ?></li>
-          <li><strong>By:</strong> <?php print $name; ?></li>   
+          <li>Ημ/νια: <?php print $date; ?></li>
+          <li>Χρήστης: <?php print $name; ?></li>   
         </ul>
       <?php endif; ?>
 

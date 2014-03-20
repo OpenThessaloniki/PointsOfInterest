@@ -15,7 +15,7 @@ function location_fax_views_data() {
   // Define the base group of this table. Fields that don't
   // have a group defined will go into this field by default.
 
-  $data['location_fax']['table']['group'] = t('Location');
+  $data['location_fax']['table']['group'] = t('Location', array(), array('context' => 'geolocation'));
 
   // Join location_fax to all the tables that would be useful
   $data['location_fax']['table']['join'] = array(

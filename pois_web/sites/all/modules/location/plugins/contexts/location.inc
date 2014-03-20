@@ -10,8 +10,8 @@
  */
 function location_location_ctools_contexts() {
   return array(
-    'title' => t('Location'),
-    'description' => t('Location'),
+    'title' => t('Location', array(), array('context' => 'geolocation')),
+    'description' => t('Location', array(), array('context' => 'geolocation')),
     'context' => 'location_context_create_location',
     'context name' => 'location',
     'settings form' => 'location_context_location_settings_form',

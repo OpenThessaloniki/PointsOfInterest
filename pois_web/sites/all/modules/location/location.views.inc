@@ -96,12 +96,12 @@ function location_views_data() {
   // Define the base group of this table. Fields that don't
   // have a group defined will go into this field by default.
 
-  $data['location']['table']['group'] = t('Location');
+  $data['location']['table']['group'] = t('Location', array(), array('context' => 'geolocation'));
 
   // Advertise this table as a possible base table
   $data['location']['table']['base'] = array(
     'field' => 'lid',
-    'title' => t('Location'),
+    'title' => t('Location', array(), array('context' => 'geolocation')),
     'help' => t('Locations are addresses and map coordinates.'),
     'weight' => -10,
   );
@@ -377,7 +377,7 @@ function location_views_data() {
   );
 
 
-  $data['location_instance']['table']['group'] = t('Location');
+  $data['location_instance']['table']['group'] = t('Location', array(), array('context' => 'geolocation'));
 
   $data['location_instance']['table']['join'] = array(
     'location' => array(
@@ -599,7 +599,7 @@ function location_views_proximity_get_reference_location($view, $options) {
     case 'uid_arg':
       if ($userhandler = $view->display_handler->get_handler('argument', $options['uid_arg'])) {
         $uid = $userhandler->get_value();
-        if ($uid && is_numeric($uid) && $tempuser = user_load(array('uid' => $uid))) {
+        if ($uid && is_numeric($uid) && $tempuser = user_load($uid)) {
           $coordinates['latitude'] = (float) $tempuser->location['latitude'];
           $coordinates['longitude'] = (float) $tempuser->location['longitude'];
         }

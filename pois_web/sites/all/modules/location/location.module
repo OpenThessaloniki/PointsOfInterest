@@ -255,7 +255,7 @@ function _location_process_location($element, $form_state) {
   $element['#tree'] = TRUE;
 
   if (!isset($element['#title'])) {
-    $element['#title'] = t('Location');
+    $element['#title'] = t('Location', array(), array('context' => 'geolocation'));
   }
   if (empty($element['#location_settings'])) {
     $element['#location_settings'] = array();
@@ -1146,6 +1146,11 @@ function _location_country_ajax_callback($form, $form_state) {
     return $form['locations'][arg(3)]['province'];
   }
   elseif (isset($form[arg(2)][arg(3)][arg(4)])) {
+    if (isset($form[arg(2)][arg(3)][arg(4)]['#entity_type']) && $form[arg(2)][arg(3)][arg(4)]['#entity_type'] == 'field_collection_item') {
+      $selected_country_value = $form[arg(2)][arg(3)][arg(4)][arg(5)][arg(6)][arg(7)]['country']['#value'];
+      $form[arg(2)][arg(3)][arg(4)][arg(5)][arg(6)][arg(7)]['province']['#options'] = array('' => t('Please select'), 'xx' => t('NOT LISTED')) + location_get_provinces($selected_country_value);
+      return $form[arg(2)][arg(3)][arg(4)][arg(5)][arg(6)][arg(7)]['province'];
+    }
     return $form[arg(2)][arg(3)][arg(4)]['province'];
   }
 }
@@ -1929,7 +1934,7 @@ function location_form($settings, $locations) {
 
   // Tidy up the form in the single location case.
   if ($numforms == 1) {
-    $form[0]['#title'] = t('Location');
+    $form[0]['#title'] = t('Location', array(), array('context' => 'geolocation'));
     // If the user had configured the form for a single location, inherit
     // the collapsible / collapsed settings.
     $form[0]['#collapsible'] = $settings['form']['collapsible'];

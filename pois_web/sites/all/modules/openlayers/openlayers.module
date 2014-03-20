@@ -31,6 +31,12 @@ define('OPENLAYERS_SUGGESTED_LIBRARY', 2.12);
  */
 define('OPENLAYERS_HOSTED_API_LIBRARY', 2.12);
 
+
+function _openlayer_array_filter($param){
+   return (!isset($param->disabled) || !$param->disabled);
+}
+
+
 /**
  * Implements hook_help().
  */
@@ -592,10 +598,15 @@ function openlayers_layer_types($reset = FALSE, $include_disabled = FALSE) {
   ctools_include('plugins');
   $layers = ctools_get_plugins('openlayers', 'layer_types');
 
-  if (!$include_disabled) {
+  //OPENTHESS CHANGED THAT!
+  /*if (!$include_disabled) {
     $layers = array_filter($layers, function($layer) {
       return (!isset($layer->disabled) || !$layer->disabled);
     });
+  }*/
+  
+  if (!$include_disabled) {
+    $layers = array_filter($layers, '_openlayer_array_filter');
   }
 
   return array_filter($layers, 'openlayers_layer_definition_check');
@@ -641,10 +652,15 @@ function openlayers_behaviors($reset = FALSE, $include_disabled = FALSE) {
   ctools_include('plugins');
   $behaviors = ctools_get_plugins('openlayers', 'behaviors');
 
-  if (!$include_disabled) {
+  //OPENTHESS CHANGED THAT
+  /*if (!$include_disabled) {
     $behaviors = array_filter($behaviors, function($behavior) {
       return (!isset($behavior->disabled) || !$behavior->disabled);
     });
+  }*/
+  
+  if (!$include_disabled) {
+    $behaviors = array_filter($behaviors, '_openlayer_array_filter');
   }
 
   return array_filter($behaviors, 'openlayers_behavior_definition_check');
@@ -669,10 +685,15 @@ function openlayers_styles($reset = FALSE, $include_disabled = FALSE) {
 
   $styles = ctools_export_load_object('openlayers_styles', 'all', array());
 
-  if (!$include_disabled) {
+  //OPENTHESS CHANGED THAT!
+  /*if (!$include_disabled) {
     $styles = array_filter($styles, function($style) {
       return !(isset($style->disabled) && $style->disabled);
     });
+  }*/
+  
+   if (!$include_disabled) {
+    $styles = array_filter($styles, '_openlayer_array_filter');
   }
 
   return $styles;
@@ -753,10 +774,15 @@ function openlayers_maps($reset = FALSE, $include_disabled = FALSE) {
 
   $maps = ctools_export_load_object('openlayers_maps', 'all', array());
 
-  if (!$include_disabled) {
+  //OPENTHESS CHANGED THAT
+  /*if (!$include_disabled) {
     $maps = array_filter($maps, function($map) {
       return !(isset($map->disabled) && $map->disabled);
     });
+  }*/
+  
+  if (!$include_disabled) {
+    $maps = array_filter($maps, '_openlayer_array_filter');
   }
 
   return $maps;

@@ -54,7 +54,7 @@ class location_handler_filter_location_province extends views_handler_filter {
         '#size' => 64,
         '#maxlength' => 64,
         // Used by province autocompletion js.
-        '#attributes' => array('class' => 'location_auto_province'),
+        '#attributes' => array('class' => array('location_auto_province')),
         '#multiple' => TRUE, //$this->options['multiple'],
       );
 

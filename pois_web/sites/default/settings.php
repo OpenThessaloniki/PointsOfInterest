@@ -184,9 +184,9 @@ $databases = array (
   array (
     'default' => 
     array (
-      'database' => 'drupal_f7',
-      'username' => 'drupal_openthess',
-      'password' => 'open)(*&^%$#@!',
+      'database' => 'YOUR_DB_NAME',
+      'username' => 'YOUR_DB_USER_NAME',
+      'password' => 'YOUR_DB_PASSWORD',
       'host' => 'localhost',
       'port' => '3306',
       'driver' => 'mysql',

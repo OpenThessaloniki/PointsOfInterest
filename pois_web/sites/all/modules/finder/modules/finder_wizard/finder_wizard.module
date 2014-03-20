@@ -1,0 +1,402 @@
+<?php
+
+/**
+ * @file
+ * The Finder page module.
+ *
+ */
+
+/**
+ * Implements hook_ctools_plugin_directory().
+ */
+function finder_wizard_ctools_plugin_directory($module, $plugin) {
+  if ($module == 'finder' && $plugin == 'element_handler') {
+    return "plugins/$plugin";
+  }
+}
+
+/**
+ * Implements hook_finder_ui_alter().
+ */
+function finder_wizard_finder_ui_alter(&$data, $finder) {
+  foreach ($finder->elements as $element) {
+    if ($element->element == 'page') {
+
+      // Disable the find button config.
+      $data['items']['find_button']['#item']['#value'] = t('Disabled by <em>Wizard page</em> element');
+      $data['items']['find_button']['#form']['settings'] = array(
+        '#markup' => t('Disabled by <em>Wizard page</em> element'),
+      );
+      // Force the find button to be enabled (we will replace it on the day).
+      $finder->settings['find_button'] = TRUE;
+
+      // Create a 'pages' group.
+      $data['groups'][1]['finder_wizard'] = t('Wizard pages');
+
+      // Set a default for the next button text.
+      if (!isset($finder->settings['finder_wizard_next_text'])) {
+        $finder->settings['finder_wizard_next_text'] = t('Next') . ' »';
+      }
+
+      // Add config for the next button text.
+      $data['items']['finder_wizard_next_text'] = array(
+        '#group' => 'finder_wizard',
+        '#item' => array(
+          '#title' => t('Next button'),
+          '#value' => $finder->setting('finder_wizard_next_text') ? $finder->setting('finder_wizard_next_text') : t('No'),
+        ),
+        '#form' => array(
+          'settings' => array(
+            'finder_wizard_next_text' => array(
+              '#type' => 'textfield',
+              '#title' => t('Next button text'),
+              '#default_value' => $finder->setting('finder_wizard_next_text'),
+              '#description' => t('Text to display on the next button.'),
+            ),
+          ),
+        ),
+      );
+
+      // Set a default for the back button.
+      if (!isset($finder->settings['finder_wizard_back'])) {
+        $finder->settings['finder_wizard_back'] = TRUE;
+      }
+
+      // Set a default for the back button text.
+      if (!isset($finder->settings['finder_wizard_back_text'])) {
+        $finder->settings['finder_wizard_back_text'] = '« ' . t('Back');
+      }
+
+      // Add config for the back button text.
+      $data['items']['finder_wizard_back'] = array(
+        '#group' => 'finder_wizard',
+        '#item' => array(
+          '#title' => t('Back button'),
+          '#value' => $finder->setting('finder_wizard_back') ? $finder->setting('finder_wizard_back_text') : t('No'),
+        ),
+        '#form' => array(
+          'settings' => array(
+            'finder_wizard_back' => array(
+              '#type' => 'checkbox',
+              '#title' => t('Use the <em>Back button</em>'),
+              '#default_value' => $finder->setting('finder_wizard_back'),
+            ),
+            'finder_wizard_back_text' => array(
+              '#type' => 'textfield',
+              '#title' => t('Back button text'),
+              '#default_value' => $finder->setting('finder_wizard_back_text'),
+              '#description' => t('Text to display on the back button.'),
+              '#process' => array('ctools_dependent_process'),
+              '#dependency' => array('edit-settings-finder-wizard-back' => array(1)),
+            ),
+          ),
+        ),
+      );
+
+      // Set a default for the back button text.
+      if (!isset($finder->settings['finder_wizard_hide_disabled'])) {
+        $finder->settings['finder_wizard_hide_disabled'] = FALSE;
+      }
+
+      // Add config for hiding disabled buttons.
+      $data['items']['finder_wizard_hide_disabled'] = array(
+        '#group' => 'finder_wizard',
+        '#item' => array(
+          '#title' => t('Hide disabled buttons'),
+          '#value' => $finder->setting('finder_wizard_hide_disabled') ? t('Yes') : t('No'),
+        ),
+        '#form' => array(
+          'settings' => array(
+            'finder_wizard_hide_disabled' => array(
+              '#type' => 'checkbox',
+              '#title' => t('Hide disabled buttons'),
+              '#default_value' => $finder->setting('finder_wizard_hide_disabled'),
+              '#description' => t('Hiding disabled buttons may cause other buttons to change in position between pages, it is best to use CSS instead.'),
+            ),
+          ),
+        ),
+      );
+
+
+      // Add some settings to URL parameters.
+      if (!isset($finder->settings['finder_wizard_url_page'])) {
+        $finder->settings['finder_wizard_url_page'] = 'page';
+      }
+      $data['items']['url']['#form']['settings']['finder_wizard_url_page'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Wizard page key'),
+        '#default_value' => $finder->setting('finder_wizard_url_page'),
+        '#description' => t('Used to indicate which page the finder is on.  Make sure this is simple enough to be used in a URL without problems.'),
+        '#required' => TRUE,
+        '#process' => array('ctools_dependent_process'),
+        '#dependency' => array('radio:settings[url]' => array('enabled')),
+        '#translatable' => FALSE,
+        '#maxlength' => 32,
+        '#size' => 30,
+      );
+      if (!isset($finder->settings['finder_wizard_url_results'])) {
+        $finder->settings['finder_wizard_url_results'] = '_results';
+      }
+      $data['items']['url']['#form']['settings']['finder_wizard_url_results'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Wizard results page value'),
+        '#default_value' => $finder->setting('finder_wizard_url_results'),
+        '#description' => t('Used to indicate the page is the results page.  Make sure this is simple enough to be used in a URL without problems.'),
+        '#required' => TRUE,
+        '#process' => array('ctools_dependent_process'),
+        '#dependency' => array('radio:settings[url]' => array('enabled')),
+        '#translatable' => FALSE,
+        '#maxlength' => 32,
+        '#size' => 30,
+      );
+
+      break;
+    }
+  }
+
+}
+
+/**
+ * Implements hook_finder_form_state_alter().
+ */
+function finder_wizard_finder_form_state_alter(&$form_state, $finder) {
+  if (empty($finder->finder_wizard)) {
+    return;
+  }
+
+  // Save new form values.
+  $form_state['values'] = $form_state['values'] + $form_state['input'];
+
+  // Decide whether the form is finished.
+  $form_state['finished'] = TRUE;
+  if ($finder->finder_wizard_page_num <= count($finder->finder_wizard) - 1) {
+    $form_state['finished'] = FALSE;
+  }
+
+  unset($finder->finder_wizard_page_num);
+}
+
+/**
+ * Implements hook_finder_render().
+ */
+function finder_wizard_finder_render($finder) {
+  // Calculate pages.
+  // $finder->finder_wizard can be used during finder form/find operations to
+  // determine if finder_wizard functionality applies.
+  foreach ($finder->elements as &$finder_element) {
+    if ($finder_element->element == 'page') {
+      $finder->finder_wizard[$finder_element->id][] = $finder_element->id;
+    }
+    elseif (!empty($finder_element->parent) && $finder->elements[$finder_element->parent]->element == 'page') {
+      $finder->finder_wizard[$finder_element->parent][] = $finder_element->id;
+    }
+  }
+  if (!empty($finder->finder_wizard)) {
+    // Add another page for results.
+    $finder->finder_wizard[$finder->setting('finder_wizard_url_results')] = array();
+  }
+
+}
+
+/**
+ * Implements hook_finder_results().
+ */
+function finder_wizard_finder_results($finder) {
+  if (empty($finder->finder_wizard)) {
+    return;
+  }
+
+  // Figure out which page this is, if it hasn't been done already.
+  if (!isset($finder->finder_wizard_page_num) || !isset($finder->finder_wizard_page_id)) {
+    finder_wizard_establish_page($finder);
+  }
+
+  // Decide whether the form is finished.
+  $finder->form_state['finished'] = TRUE;
+  if ($finder->finder_wizard_page_num < count($finder->finder_wizard) - 1) {
+    $finder->form_state['finished'] = FALSE;
+  }
+
+}
+
+/**
+ * Implements hook_finder_form().
+ */
+function finder_wizard_finder_form($finder) {
+  if (empty($finder->finder_wizard)) {
+    return;
+  }
+
+  // Figure out which page this is, if it hasn't been done already.
+  if (!isset($finder->finder_wizard_page_num) || !isset($finder->finder_wizard_page_id)) {
+    finder_wizard_establish_page($finder);
+  }
+}
+
+/**
+ * Determine which page we are on, both numerically and by identity.
+ */
+function finder_wizard_establish_page($finder) {
+  if (!empty($_GET[$finder->setting('finder_wizard_url_page')])) {
+    // This was already worked out upon submission and the page_id is in the url.
+    $finder->finder_wizard_page_id = $_GET[$finder->setting('finder_wizard_url_page')];
+    $finder_wizard_index = array_keys($finder->finder_wizard);
+    $finder->finder_wizard_page_num = array_search($finder->finder_wizard_page_id, $finder_wizard_index);
+  }
+  else {
+    // Not in the url, work it out.
+    $form_state = $finder->form_state;
+    $direction = 1;
+    if (!empty($form_state['clicked_button']) && $form_state['clicked_button']['#name'] == 'back') {
+      $direction = -1;
+    }
+    $finder->finder_wizard_page_num = isset($form_state['input']['finder_wizard_page_num']) ? $form_state['input']['finder_wizard_page_num'] + $direction : 0;
+    $finder_wizard_index = array_keys($finder->finder_wizard);
+    $finder->finder_wizard_page_id = NULL;
+    if (isset($finder_wizard_index[$finder->finder_wizard_page_num])) {
+      $finder->finder_wizard_page_id = $finder_wizard_index[$finder->finder_wizard_page_num];
+    }
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function finder_wizard_form_finder_form_alter(&$form, &$form_state, $form_id) {
+  $finder = $form_state['finder'];
+  if (empty($finder->finder_wizard)) {
+    return;
+  }
+
+  // Track the page num.
+  $form['finder_wizard']['finder_wizard_page_num'] = array(
+    '#type' => 'hidden',
+    '#value' => $finder->finder_wizard_page_num,
+  );
+
+  // Pass the known values through as hidden fields.
+  $finder_wizard_index = array_keys($finder->finder_wizard);
+  foreach ($finder_wizard_index as $finder_wizard_page_num => $finder_wizard_page_id) {
+    if ($finder->finder_wizard_page_id != $finder_wizard_page_id) {
+       foreach ($finder->finder_wizard[$finder_wizard_page_id] as $page_element) {
+         if (isset($form_state['values'][$page_element])) {
+           $form['finder_wizard'][$page_element] = array(
+             '#type' => 'hidden',
+             '#value' => $form_state['values'][$page_element],
+           );
+         }
+       }
+    }
+  }
+
+  // Create next button.
+  $next = $form['finder_form']['actions']['find'];
+  $next['#value'] = $finder->setting('finder_wizard_next_text');
+  $next['#name'] = 'next';
+  if ($finder->finder_wizard_page_num == count($finder->finder_wizard) - 1) {
+    if ($finder->setting('finder_wizard_hide_disabled')) {
+      $next = NULL;
+    }
+    else {
+      $next['#disabled'] = TRUE;
+    }
+  }
+  if ($next) {
+    $form['finder_form']['actions'] = array('next' => $next) + $form['finder_form']['actions'];
+  }
+
+  // Create back button.
+  if ($finder->setting('finder_wizard_back')) {
+    $back = $form['finder_form']['actions']['find'];
+    $back['#value'] = $finder->setting('finder_wizard_back_text');
+    $back['#name'] = 'back';
+    if ($finder->finder_wizard_page_num == 0) {
+      if ($finder->setting('finder_wizard_hide_disabled')) {
+        $back = NULL;
+      }
+      else {
+        $back['#disabled'] = TRUE;
+      }
+    }
+    if ($back) {
+      $form['finder_form']['actions'] = array('back' => $back) + $form['finder_form']['actions'];
+    }
+  }
+
+  // Remove find button.
+  unset($form['finder_form']['actions']['find']);
+
+  // Handle go button - it only works on the 2nd last page :/
+  if (isset($form['finder_form']['actions']['go']) && $finder->finder_wizard_page_num != count($finder->finder_wizard) - 2) {
+    if ($finder->setting('finder_wizard_hide_disabled')) {
+      unset($form['finder_form']['actions']['go']);
+    }
+    else {
+      $form['finder_form']['actions']['go']['#disabled'] = TRUE;
+    }
+  }
+
+  // Handle automatically clicking the buttons.  @todo is there a better way to do this (i.e. without waiting for the page to load).
+  if ($finder->finder_wizard_page_id != $finder->setting('finder_wizard_url_results')) {
+    if (!finder_wizard_find_page_id_in_form($finder->finder_wizard_page_id, $form['finder_form'])) {
+       if (!empty($_GET['back']) || (isset($form_state['clicked_button']['#name']) && $form_state['clicked_button']['#name'] == 'back')) {
+         $js_settings['finder_wizard_back'][] = $finder->build_id;
+       }
+       else {
+         $js_settings['finder_wizard_next'][] = $finder->build_id;
+       }
+       drupal_add_js(array('finder_wizard' => $js_settings), 'setting');
+       drupal_add_js(drupal_get_path('module', 'finder_wizard') . '/finder_wizard.js');
+
+       $form['finder_form']['finder-wizard-redirect'] = array(
+         '#prefix' => '<div class="finder-wizard-redirect"><div class="ajax-progress throbber"></div><p>',
+         '#markup' => t('Redirecting...'),
+         '#suffix' => '</p></div>',
+       );
+    }
+  }
+
+}
+
+/**
+ *  Find a page ID in a form.
+ */
+function finder_wizard_find_page_id_in_form($page_id, $form) {
+  $element_children = element_children($form);
+  foreach ($element_children as $child) {
+    if ($child == $page_id) {
+      return TRUE;
+    }
+    else {
+      if (finder_wizard_find_page_id_in_form($page_id, $form[$child])) {
+        return TRUE;
+      }
+    }
+  }
+  return FALSE;
+}
+
+/**
+ * Implements hook_finder_form_redirect_alter().
+ */
+function finder_wizard_finder_form_redirect_alter(&$context) {
+  $finder = $context['form_state']['finder'];
+  $form_state = &$context['form_state'];
+  if (empty($finder->finder_wizard)) {
+    return;
+  }
+  // Work out the next page and add it to the url.
+  $direction = 1;
+  // Using 'triggering_element' or 'clicked_button' here is unreliable. No idea why.
+  if (isset($_POST['back'])) {
+    $direction = -1;
+  }
+
+  $finder_wizard_page_num = isset($form_state['input']['finder_wizard_page_num']) ? $form_state['input']['finder_wizard_page_num'] + $direction : 0;
+
+  $finder_wizard_index = array_keys($finder->finder_wizard);
+  $context['query'][$finder->setting('finder_wizard_url_page')] = $finder_wizard_index[$finder_wizard_page_num];
+  if ($direction < 0) {
+    $context['query']['back'] = 1;
+  }
+}

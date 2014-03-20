@@ -40,7 +40,7 @@ function location_cck_theme() {
 function location_cck_field_info() {
   return array(
     'location' => array(
-      'label' => t('Location'),
+      'label' => t('Location', array(), array('context' => 'geolocation')),
       'description' => t('Store a location.module location.'),
       'settings' => array(),
       'instance_settings' => array(),
@@ -121,7 +121,7 @@ function location_cck_field_settings($op, $field) {
         'base' => 'location',
         'field' => 'lid',
         'handler' => 'views_handler_relationship',
-        'label' => t('Location'), // @@@ Some sort of better name?
+        'label' => t('Location', array(), array('context' => 'geolocation')), // @@@ Some sort of better name?
       );
       return $data;
   }
@@ -164,6 +164,17 @@ function location_cck_field_insert($entity_type, $entity, $field, $instance, $la
       location_save_locations($items, $criteria);
     }
   }
+  elseif ($entity_type == 'user') {
+    if (!empty($items)) {
+      // Store instances of locations by field name and vid.
+      $criteria = array(
+        'genid' => 'cck:' . $field['field_name'] . ':' . $entity->uid,
+        'vid' => $entity->uid,
+        'uid' => $entity->uid,
+      );
+      location_save_locations($items, $criteria);
+    }
+  }
   elseif (!empty($items)) {
     list($id, $vid, $bundle) = entity_extract_ids($entity_type, $entity);
     // Store instances of locations by field name and vid.
@@ -188,6 +199,17 @@ function location_cck_field_update($entity_type, $entity, $field, $instance, $la
         'genid' => 'cck:' . $field['field_name'] . ':' . $entity->vid,
         'vid' => $entity->vid,
         'nid' => $entity->nid,
+      );
+      location_save_locations($items, $criteria);
+    }
+  }
+  elseif ($entity_type == 'user') {
+    if (!empty($items)) {
+      // Store instances of locations by field name and vid.
+      $criteria = array(
+        'genid' => 'cck:' . $field['field_name'] . ':' . $entity->uid,
+        'vid' => $entity->uid,
+        'uid' => $entity->uid,
       );
       location_save_locations($items, $criteria);
     }
@@ -222,6 +244,11 @@ function location_cck_field_delete($entity_type, $entity, $field, $instance, $la
       location_save_locations($locs, array('genid' => $genid));
     }
   }
+  elseif ($entity_type == 'user') {
+    $genid = 'cck:' . $field['field_name'] . ':' . $entity->uid;
+    $locs = array();
+    location_save_locations($locs, array('genid' => $genid));
+  }
   else {
     list($id, $vid, $bundle) = entity_extract_ids($entity_type, $entity);
     $genid = 'field:' . $field['field_name'] . ':' . $entity_type . ':' . $id;
@@ -236,6 +263,11 @@ function location_cck_field_delete($entity_type, $entity, $field, $instance, $la
 function location_cck_field_delete_revision($entity_type, $entity, $field, $instance, $langcode, &$items) {
   if ($entity_type == 'node') {
     $genid = 'cck:' . $field['field_name'] . ':' . $entity->vid;
+    $locs = array();
+    location_save_locations($locs, array('genid' => $genid));
+  }
+  elseif ($entity_type == 'user') {
+    $genid = 'cck:' . $field['field_name'] . ':' . $entity->uid;
     $locs = array();
     location_save_locations($locs, array('genid' => $genid));
   }
@@ -617,15 +649,15 @@ function location_cck_tokens($type, $tokens, array $data = array(), array $optio
     // Loop through the tokens.
     foreach ($tokens as $name => $original) {
       // Break our token into an array to use later.
-      $fields = explode(':', $name);
+      $fields = explode(':', str_replace(array('[', ']'), '', $original));
       $entity = $fields[0];
-      $field = $fields[1];
+      $field = (isset($fields[1])) ? $fields[1] : NULL;
       // Allow for a position at the end of the token. If no position is given
       // default it to the first element.
       $position = (isset($fields[2]) && is_numeric($fields[2]) ? $fields[2] : 0);
 
       // If the token is in the $available, replace it.
-      if($available[$field]) {
+      if(array_key_exists($field, $available) && $available[$field]) {
         $replacements[$original] = (isset($node->{$entity}[LANGUAGE_NONE][$position][$field]) ? $node->{$entity}[LANGUAGE_NONE][$position][$field] : '');
       }
     }  

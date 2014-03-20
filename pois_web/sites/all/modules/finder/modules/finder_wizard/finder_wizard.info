@@ -1,0 +1,12 @@
+name = Finder wizard
+description = "Adds page container elements to finder so that finder forms can be configured like a wizard."
+core = 7.x
+package = "Finder"
+dependencies[] = finder
+dependencies[] = ctools
+; Information added by drupal.org packaging script on 2012-08-20
+version = "7.x-2.0"
+core = "7.x"
+project = "finder"
+datestamp = "1345432640"
+

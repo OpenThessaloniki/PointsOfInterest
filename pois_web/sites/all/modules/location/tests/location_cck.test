@@ -27,7 +27,7 @@ class LocationCCKTest extends LocationCCK2Test {
     return array(
       'name' => t('Location CCK checks(broken!!!)'),
       'description' => t('Test corner cases of the CCK Location module.'),
-      'group' => t('Location'),
+      'group' => t('Location', array(), array('context' => 'geolocation')),
     );
   }
 

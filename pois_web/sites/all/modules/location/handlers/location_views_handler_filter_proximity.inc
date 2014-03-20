@@ -271,7 +271,7 @@ class location_views_handler_filter_proximity extends views_handler_filter {
 
         $form[$key]['user_location_delta'] = array(
           '#type' => 'select',
-          '#title' => t('Location'),
+          '#title' => t('Location', array(), array('context' => 'geolocation')),
           '#options' => $location_options,
           '#description' => t('Select which of your locations to use.'),
           '#weight' => 0,
